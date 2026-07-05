@@ -135,6 +135,7 @@ total_score = 0
 round_score = 0
 lose_count = 0 
 inventory_items = []
+inventory_visible = True
 pet_name = ""
 endings = []
 dialog_box_visible = False
@@ -168,6 +169,8 @@ trivia_selected = "A"
 result_timer = 0
 showing_trivia_result = False
 
+cactus_bonus = False
+
 cactus_last_line = ""
 narrator_last_line =""
 lines = ["That was soooo much fun!", "Till next time!", "Fun, right?", "Bye!"]
@@ -177,14 +180,25 @@ cactus_line_done = False
 narrator_line_done = False
 score_line_done = False
 
-refused_bucket = False
+bucket_taken = False 
 bucket_scene_started = False
 bucket_choice_started = False
 
 trivia_dialog = []
 
-bucket_timer = 0
+bucket_timer = 0 
 bucket_scene_started = False
+
+jeep_man_visible = False
+trivia_round = 1
+
+man_back_timer = 0
+man_back = False
+man_back_bonus = False
+
+post_trivia_1_done = False 
+
+strange_sound = random.choice(sound)
 
 #DIALOG
 intro = ["You find yourself in the middle of the desert.",
@@ -211,13 +225,159 @@ cactus_happy = ["You agree to the floating cactus offer"
                 " " ", it grins widely and askes:"]
 
 cactus_sad = ["You refuse as a normal sane human being.",
-              "it poutes and says 'fine! I will"
-              " " "be back!' then it vanishes.",
+              "fine! I will"
+              " " "be back!",
               "That was weird."]
 bucket_dialog = ["You looked around and there was an empty bucket.",
-                 "You remembered something about having to fill it."]
+                 "You remembered something about having to fill it.", 
+                 "nothing"]
+jeep_vs_pond = ["In the distance, you spot two things:",
+               "-A shimmering water pond far to your left.",
+               "-A black jeep, strange and unmoving, off to the right.",
+               "You have to choose. You can’t just sit here"
+                " " "and wait for the sun to finish you off.",
+                "nothing"]
+jeep_vs_pond_main = [] 
+jeep_dialog = ["You walk toward the jeep.",
+               "When you reach it, you see a man inspecting the engine.",
+               "It looks like the jeep is broken.",
+               "nothing"]
+pond_dialog = ["You start walking toward the water pond.",
+               "But with every step, the distance"
+                " " "seems to stretch farther away.",
+                "You keep walking... and walking...",
+                "nothing"]
+pond_back_dialog = ["You lost 5 points for coming herefrom the start!",
+                    "You went back to where you were."] + jeep_vs_pond
+cactus_rare_dialog = ["You heard a strange sound", 
+                      "as you looked, it turned out to be the"
+                       " " "floating cactus again..",
+                       "Hi there!",
+                       "What are you doing here? As far"
+                        " " "as I know, this place is empty.",
+                        "Do you want a drive to the jeep?"
+                        " " "there is a guy there that may help you!",
+                        "nothing"]
+#EDITING
+cactus_rare_happy = ["It holds you happily,and flies away with you humming.",
+                     "you arrive in a couple of minutes.",
+                     "Here you go!' it said happily.",
+                     "Also, here is 20 points! They may help"
+                     " " "you :D' it said before vanishing",
+                     f"Your total score now is {total_score}.",
+                     "Well, it turned out to be helpful.",
+                     "nothing"]
+cactus_rare_sad = ["fine! I shouldn't have offered you help from the start",
+                   "It vanished looking upset.",
+                   "It is your fault.",
+                   "You continue walking."
+                   "And walking",
+                   "The pond never gets any closer.",
+                   "It was a mirage.",
+                   "You're more lost than before,"
+                    " " "the heat pressing down"
+                    " " "on you like a weight.",
+                    "Exhausted, dizzy, and drained"
+                    " " "from the endless walk",
+                    "You collapse in the sand."]
+mirage_dialog = ["The pond never gets any closer.",
+                 "It was a mirage.",
+                 "You're more lost than before,"
+                 " " "the heat pressing down on you like a weight.",
+                 "Exhausted, dizzy, and"
+                 " " "drained from the endless walk",
+                 "You collapse in the sand."]
+
+jeep_back_dialog = []
+
+jeep_man_talk = ["You call for him and he walks toward you with a questioning look",
+                 "You explain that you're lost and don’t remember how you got here.",
+                "I was headed to a nearby village, but the jeep broke down.",
+                 "The jeep needs water to start again",
+                 "There is a well nearby but I have nothing to fetch water with.",
+                 "If you help him he might help you in return.",
+                 "nothing"]
+
+bucket_given_dialog = ["You hand him the bucket",
+                       "He takes it, walks off toward the well.",
+                       "As you wait you hear a strange sound, when you looked up you spot it again.",
+                       "The Floating Cactus.",
+                       "Hey there again!",
+                       "Do you want to play another trivia game?",
+                       "Just like the last time you earn 5 points for each correct question and lose 5 for each wrong one!",
+                       "Remember that can easily increase your score if you are smart enough!",
+                       "nothing"]
+
+bucket_thrown_dialog= ["You threw the bucket directly at his head.",
+                        "OW! What is wrong with you!?",
+                        "You lost the bucket.",
+                        "You know what? I am taking this and leaving you.",
+                        "You called after him.",
+                        "What?",
+                        "You offered to help him. He sighed deeply.",
+                        "Fine. Come make yourself useful",
+                        "You were just going after him but a strange sound stopped you.",
+                        "You looked up.",
+                        "It was The Floating Cactus.",
+                        "Hey there again!",
+                        "Do you want to play another trivia game?",
+                        "Just like the last time you earn 5 points for each correct question and lose 5 for each wrong one!",
+                        "Remember that can easily increase your score if you are smart enough!",
+                        "nothing"]
+
+man_back_dialog = ["The man comes back with the bucket full of water",
+                  "He walks to the jeep.",
+                  "After pouring the water into the engine, he fiddles with it for a while"
+                   " " "and the jeep starts.",
+                   "You have earned 10 points for choosing right!",
+                   f"Your total score now is {total_score} points!",
+                   "Get in",
+                   "You hop into the jeep",
+                   "As soon as he began driving, your eyes closed. Heavy with sleep.",
+                   "...",
+                   "...",
+                   "...",
+                   "You opened your eyes and you were at the entrance of a village.",
+                   "Here we are",
+                   "I've got some business to take care of. I have to go. See you around.",
+                   "nothing"]
+stare_man_dialog = ["You stared at him.",
+                    "...",
+                    "...",
+                    "Stop looking at me like that",
+                    "...",
+                    "Stop.",
+                    "Ok. Ok. Just.. come help me, let's find a way to make it work.",
+                    "nothing"]
+help_dialog = ["You offered to help",
+               "I told you. I need something to fetch the water with.",
+               "You offered your shoe.",
+               "Are you serious?",
+               "You nodded. He sighed",
+               "That will take forever. Just come help me, let's find a way to make it work.",
+               "nothing"]
+
+man_die = ["You both try everything to fix" #BACK
+            " " "the jeep, but nothing works.",
+            "You're too hungry to think straight.",
+            "The man crawls into the jeep.",
+            "He looks exhausted—maybe he"
+            " " "passed out, maybe worse.",
+            "You hear a strange sound in the distance"
+            " " f"—{strange_sound}, you think.",
+            "It doesn't look safe to stay here.",
+            "Night falls.",
+            "You lie on the sand, eyes"
+            " " "heavy, body aching.",
+            "The stars blur.",
+            "Everything fades.",
+            "You don’t hear anything anymore.",
+            "You had to get the bucket."]
 current_dialog = intro
 current_index = 0
+#ENDINGS
+collapse = False
+points_poor = False
 
 #IMAGES
 inventory_bg = pygame.image.load("Images/inventory.png").convert_alpha()
@@ -227,6 +387,7 @@ dialog_box = pygame.image.load("Images/dialog_box.png").convert_alpha()
 dialog_ch = pygame.image.load("Images/dialog_ch_symbol.png").convert_alpha()
 choice_character = pygame.image.load("Images/choice_character.png").convert_alpha()
 dialog_cactus = pygame.image.load("Images/dialog_cactus_symbol.png").convert_alpha()
+dialog_man = pygame.image.load("Images/dialog_man_symbol.png").convert_alpha()
 cactus_normal = pygame.image.load("Images/cactus_character.png").convert_alpha()
 cactus_angry = pygame.image.load("Images/cactus_angry.png").convert_alpha()
 cactus_points_won = pygame.image.load("Images/cactus_points_won.png").convert_alpha()
@@ -234,7 +395,26 @@ cactus_points_loss = pygame.image.load("Images/cactus_points_loss.png").convert_
 cactus = cactus_normal
 dialog_character = dialog_ch
 bg2 = pygame.image.load("Images/bg2.jpg").convert_alpha()
+bg_pond = pygame.image.load("Images/bg_pond.jpg").convert_alpha()
+bg_jeep = pygame.image.load("Images/bg_jeep.jpg").convert_alpha()
 bucket_img = pygame.image.load("Images/bucket.png").convert_alpha()
+bucket_icon = pygame.transform.scale(bucket_img, (60, 60))
+bg_flying = pygame.image.load("Images/bg_flying.jpg").convert_alpha()
+bg_walking_1 = pygame.image.load("Images/bg_walking_1.jpg").convert_alpha()
+bg_walking_2 = pygame.image.load("Images/bg_walking_2.jpg").convert_alpha()
+bg_walking_3 = pygame.image.load("Images/bg_walking_3.jpg").convert_alpha()
+bg_collapse = pygame.image.load("Images/bg_collapse.jpg").convert_alpha()
+jeep_man_normal = pygame.image.load("Images/jeep_man_normal.png").convert_alpha()
+bg_jeep_man_inspecting = pygame.image.load("Images/bg_jeep_man_inspecting.jpg").convert_alpha()
+jeep_man_angry = pygame.image.load("Images/jeep_man_angry.png").convert_alpha()
+jeep_man_bucket = pygame.image.load("Images/jeep_man_bucket.png").convert_alpha()
+bg_in_jeep = pygame.image.load("Images/bg_in_jeep.jpg").convert_alpha()
+bg_jeep_night_1 = pygame.image.load("Images/bg_jeep_night_half.jpg").convert_alpha()
+bg_jeep_night_2 = pygame.image.load("Images/bg_jeep_night_half2.jpg").convert_alpha()
+bg_jeep_night_3 = pygame.image.load("Images/bg_jeep_night_full.jpg").convert_alpha()
+bg_stars = pygame.image.load("Images/bg_stars.jpg").convert_alpha()
+bg_stars_blur = pygame.image.load("Images/bg_stars_blur.jpg").convert_alpha()
+bg_village_entrance = pygame.image.load("Images/bg_village_entrance.jpg").convert_alpha()
 
 #SLOTS
 slot1 = pygame.image.load("Images/slot1.png").convert_alpha()
@@ -250,11 +430,22 @@ slot4_rect = slot4.get_rect(topleft=(690, 10))
 slot5_rect = slot5.get_rect(topleft=(780, 10))
 
 current_bg = bg1
+jeep_man = jeep_man_normal
 
 #FONT
 font = pygame.font.Font("fonts/messages.ttf", 30)
 
 #FUNCTIONS
+def check_score():
+    global game_state, dialog_box_visible, current_dialog, current_index, points_poor, trivia_active
+    if total_score < 0:
+        current_dialog = ["You have less than 0 points! Sorry, that means game over for you!"]
+        dialog_box_visible = True
+        current_index = 0
+        trivia_active = False
+        if not points_poor:
+            points_poor = True
+        game_state = "game_over"
 
 def draw_inventory():
     screen.blit(inventory_bg, (0, 0))
@@ -302,7 +493,15 @@ def restart():
     global correct_position, trivia_done, trivia_selected, result_timer, showing_trivia_result
     global cactus_last_line, narrator_last_line, cactus_line_done, narrator_line_done, score_line_done
     global current_dialog, current_index, cactus, dialog_character
+    global bucket_taken, bucket_scene_started, bucket_choice_started, bucket_timer
+    global current_bg
+    global collapse, points_poor, cactus_points, jeep_man_visible
+    global jeep_vs_pond_main, jeep_man
+    global trivia_round, man_back, man_back_timer, man_back_bonus
+    global cactus_bonus, trivia_showing_result, post_trivia_1_done
 
+
+    post_trivia_1_done = False 
     total_score = 0
     round_score = 0
     lose_count = 0
@@ -337,8 +536,28 @@ def restart():
     score_line_done = False
     current_dialog = intro
     current_index = 0
+    current_bg = bg1
     cactus = cactus_normal
     dialog_character = dialog_ch
+    bucket_taken = False
+    bucket_scene_started = False
+    bucket_choice_started = False
+    bucket_timer = 0
+    bucket_scene_started = False
+    man_back_bonus = False
+    collapse = False
+    points_poor = False
+    cactus_points = False
+    jeep_man_visible = False
+    trivia_round = 1
+    man_back = False
+    man_back_timer = 0
+    man_back_bonus = False  
+    cactus_bonus = False    
+    trivia_showing_result = False
+    trivia_dialog = []
+    jeep_man = jeep_man_normal
+    jeep_vs_pond_main = []  
 
 def draw_message(message, x, y):
     text_surface = font.render(message, True, (0, 0, 0))
@@ -367,9 +586,15 @@ def text(message, width, x, y):
 
 def dialog_check():
     if dialog_box_visible:
-        screen.blit(dialog_box, (51, 487))
-        screen.blit(dialog_character,(103, 514))
-        text(current_dialog[current_index], 1040, 185, 514)
+        if jeep_man_visible: #EDIT
+            screen.blit(jeep_man, (480, 280))
+            screen.blit(dialog_box, (51, 487))
+            screen.blit(dialog_character,(103, 514))
+            text(current_dialog[current_index], 1040, 185, 514)
+        else:
+            screen.blit(dialog_box, (51, 487))
+            screen.blit(dialog_character,(103, 514))
+            text(current_dialog[current_index], 1040, 185, 514)
 
 def choices(left_choice, right_choice):
     global choice_character_visible
@@ -383,7 +608,7 @@ def choices(left_choice, right_choice):
             screen.blit(choice_character, (590, 560))
         choice_character_visible = True
         text(left_choice, 550, 100, 560)
-        text(right_choice, 550, 820, 560)
+        text(right_choice, 514, 820, 560)
 
 
 def start():
@@ -436,11 +661,13 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        
 
         if event.type == pygame.KEYDOWN:
-            print(f"Key pressed: {event.key}")
             if event.key == pygame.K_F11: 
                 pygame.display.toggle_fullscreen()
+
+        
 
             if event.key == pygame.K_z: 
                 if dialog_box_visible and game_state == "dialog":
@@ -449,7 +676,7 @@ while True:
                     else:
                         dialog_box_visible = False
 
-                elif game_state == "game_over":
+                if game_state == "game_over":
                     if current_index < len(current_dialog) - 1:
                         current_index += 1
                     else:
@@ -464,11 +691,12 @@ while True:
                         dialog_box_visible = True
                     elif selected_choice == "left_choice":
                         game_state = "dialog"
-                        current_dialog = cactus_happy
                         trivia_active = True
+                        trivia_question_num = 0
+                        round_score = 0
                         trivia_question_setup()
                         current_index = 0
-                        dialog_box_visible = True
+                        dialog_box_visible = False
 
                 
                 
@@ -487,6 +715,7 @@ while True:
                             narrator_last_line = random.choice(narrator_lines)
                             score_line = f"You got {round_score} points. Your total score is {total_score}!"
                             showing_trivia_result = True
+                            dialog_box_visible = False
                             result_timer = pygame.time.get_ticks()
                             
                         else:
@@ -496,28 +725,156 @@ while True:
                         total_score -= 5
                         round_score -= 5
                         trivia_question_num += 1
-                        if total_score < 0:
-                            current_dialog = ["You have less than 0 points! Sorry, that means game over for you!"]
-                            endings.append("Points Poor")
-                            game_state = "game_over"
-                            dialog_box_visible = True
-                            current_index = 0
-                            trivia_active = False
-                            
+                        check_score()
+                        if total_score >= 0:
+                            if trivia_question_num >= 3:
+                                trivia_done = True
+                                trivia_active = False
+                                lines = ["That was soooo much fun!", "Till next time!", "Fun, right?", "Bye!"]
+                                narrator_lines = ["That was weird.", "What was that?", "Well, that is your life now."]
+                                cactus_last_line = random.choice(lines)
+                                narrator_last_line = random.choice(narrator_lines)
+                                score_line = f"You got {round_score} points. Your total score is {total_score}!"
+                                showing_trivia_result = True
+                                dialog_box_visible = False
+                                result_timer = pygame.time.get_ticks()
+                            else:
+                                trivia_question_setup()     
 
-                        elif trivia_question_num >= 3:
-                            trivia_done = True
-                            trivia_active = False
-                            lines = ["That was soooo much fun!", "Till next time!", "Fun, right?", "Bye!"]
-                            narrator_lines = ["That was weird.", "You are planning to play again next time, aren't you?", "Well, that is your life now."]
-                            cactus_last_line = random.choice(lines)
-                            narrator_last_line = random.choice(narrator_lines)
-                            score_line = f"You got {round_score} points. Your total score is {total_score}!"
-                            showing_trivia_result = True
-                            result_timer = pygame.time.get_ticks()
-                        else:
-                            trivia_question_setup()     
+                elif game_state == "bucket_choice":
+                    if selected_choice == "right_choice":
+                        game_state = "dialog"
+                        jeep_vs_pond_main = ["You left the bucket"] + jeep_vs_pond
+                        current_dialog = jeep_vs_pond_main
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        game_state = "dialog"
+                        inventory_add(bucket_icon)
+                        bucket_taken = True
                         
+                        jeep_vs_pond_main = ["You took the bucket"] + jeep_vs_pond
+                        current_dialog = jeep_vs_pond_main
+                        current_index = 0
+                        dialog_box_visible = True
+
+                elif game_state == "jeep_vs_pond_choice":
+                    if selected_choice == "right_choice":
+                        game_state = "dialog"
+                        current_dialog = jeep_dialog
+                        current_bg = bg_jeep
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        game_state = "dialog"
+                        current_dialog = pond_dialog
+                        current_bg = bg_pond
+                        current_index = 0
+                        dialog_box_visible = True
+  
+                elif game_state == "pond_choices":
+                    if selected_choice == "right_choice":
+                        total_score -= 5
+                        check_score()
+                        if total_score >= 0:
+                            current_dialog = pond_back_dialog
+                            game_state = "dialog"
+                            current_index = 0
+                            dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        rare_event_mirage = 0 #random.randint(1, 15) EDIT LATER 
+                        if rare_event_mirage == 1:
+                            current_dialog = cactus_rare_dialog
+                            game_state = "dialog"
+                            current_index = 0
+                            dialog_box_visible = True
+                        else:
+                            current_dialog = mirage_dialog
+                            game_state = "dialog"
+                            current_index = 0
+                            dialog_box_visible = True
+
+                    
+                        
+                        
+
+                elif game_state == "cactus_rare_choices":
+                    if selected_choice == "right_choice":
+                        current_dialog = cactus_rare_sad
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        current_dialog = cactus_rare_happy
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+
+                elif game_state == "jeep_choices": 
+                    if selected_choice == "right_choice":
+                        total_score -= 5
+                        check_score()
+                        if total_score >= 0:
+                            jeep_back_dialog = ["You lost 5 points for changing your choice!", f"Your score now is {total_score}.", "nothing"] 
+                            game_state = "dialog"
+                            current_dialog = jeep_back_dialog
+                            current_index = 0
+                            dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        current_dialog = jeep_man_talk
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True    
+#HERE
+                elif game_state == "jeep_bucket_choices":
+                    if selected_choice == "left_choice":
+                        current_dialog = bucket_given_dialog
+                        inventory_items.remove(bucket_icon)
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "right_choice":
+                        total_score -= 5
+                        check_score()
+                        if total_score >= 0:
+                            current_dialog = bucket_thrown_dialog
+                            inventory_items.remove(bucket_icon)
+                            game_state = "dialog"
+                            current_index = 0
+                            dialog_box_visible = True
+
+                elif dialog_box_visible and game_state == "trivia_game_2":
+                    if selected_choice == "left_choice":
+                        trivia_round = 2
+                        trivia_active = True
+                        trivia_question_num = 0
+                        round_score = 0
+                        trivia_question_setup()
+                        game_state = "dialog"
+                        dialog_box_visible = False
+                    elif selected_choice == "right_choice":
+                        cactus = cactus_angry
+                        current_dialog = ["You refuse.",
+                                          "Fine! FINE. I won't help you next time!",
+                                          "It vanishes looking deeply offended."]
+                        current_index = 0
+                        dialog_box_visible = True
+                        game_state = "dialog"
+                        man_back = True
+                        man_back_timer = pygame.time.get_ticks()
+                        bucket_scene_started = False  
+
+                elif game_state == "jeep_no_bucket_choices":
+                    if selected_choice == "right_choice":
+                        current_dialog = stare_man_dialog
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        current_dialog = help_dialog
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
 
             if event.key == pygame.K_RIGHT:
                 if choice_character_visible:
@@ -546,7 +903,6 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
-            print(mouse_pos)
     
     start()
     current_time = pygame.time.get_ticks()
@@ -588,23 +944,313 @@ while True:
     if current_dialog == cactus_sad:
         if current_index == len(current_dialog) - 1:
             cactus_visible = False
+            cactus = cactus_normal
             dialog_character = dialog_ch
             if not dialog_box_visible and not bucket_scene_started:
                 bucket_timer = pygame.time.get_ticks()
                 bucket_scene_started = True
+            if current_index == 1:
+                dialog_character = dialog_cactus
+            if current_index == 2:
+                dialog_character = dialog_ch
     
     if current_dialog == trivia_dialog:
         if current_index == 2:
             cactus_visible = False
             dialog_character = dialog_ch
-        if current_index == len(trivia_dialog) - 1 and not dialog_box_visible and not bucket_scene_started:
-            bucket_timer = pygame.time.get_ticks()
-            bucket_scene_started = True
+        if trivia_round == 1:
+            if current_index == len(trivia_dialog) - 1 and not dialog_box_visible and not post_trivia_1_done:
+                post_trivia_1_done = True
+                bucket_timer = pygame.time.get_ticks()
+                bucket_scene_started = True
+            #TRIVIA ROUND 2
+        elif trivia_round == 2:
+            if current_index == len(trivia_dialog) - 1 and not dialog_box_visible and not man_back:
+                man_back = True
+                man_back_timer = pygame.time.get_ticks()
+                bucket_scene_started = False
 
     if current_dialog == bucket_dialog:
         if current_index == 1:
+            current_bg = bg2 
+        if current_index == len(current_dialog) - 1:
+            game_state = "bucket_choice"
+
+    if current_dialog == jeep_vs_pond_main:
+        if current_index == 0 or current_index == 1:
             current_bg = bg2
+        elif current_index == 2:
+            current_bg = bg_pond
+        elif current_index == 3:
+            current_bg = bg_jeep
+        elif current_index == 4:
+            current_bg = bg2
+
+        if current_index == len(current_dialog) - 1:
+            game_state = "jeep_vs_pond_choice"
+    
+    
+    if current_dialog == pond_dialog:
+        if current_index == 3:
+            game_state = "pond_choices"
+    
+    if current_dialog == pond_back_dialog:
+        if current_index == 2:
+            current_bg = bg2
+        if current_index == len(current_dialog) - 1:
+            game_state = "jeep_vs_pond_choice"
+
+    if current_dialog == cactus_rare_dialog:
+        if current_index == 1:
+            cactus_visible = True
+        if current_index == 2:
+            dialog_character = dialog_cactus
+        if current_index == len(current_dialog) - 1:
+            game_state = "cactus_rare_choices"
+            dialog_character = dialog_ch
+
+    if current_dialog == cactus_rare_happy:
+        cactus_visible = False
+        if not cactus_points:
+            total_score += 20
+            cactus_points = True
+            cactus_rare_happy[4] = f"Your total score now is {total_score}."
+        if current_index == 0:
+            current_bg = bg_flying
+        if current_index == 1:
+            current_bg = bg_jeep
+        if current_index == 2:
+            dialog_character = dialog_cactus
+            cactus_visible = True
+        if current_index == 3:
+            cactus_visible = True
+        if current_index == 5:
+            cactus_visible = False
+            dialog_character = dialog_ch
+        if current_index == len(current_dialog) - 1:
+            game_state = "jeep" #EDIT LATER
+
+    if current_dialog == cactus_rare_sad:
+        cactus = cactus_angry
+        if current_index == 0:
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            dialog_character = dialog_ch
+            cactus_visible = False
+        if current_index == 3:
+            current_bg = bg_walking_1
+        if current_index == 4:
+            current_bg = bg_walking_2
+        if current_index == 5:
+            current_bg = bg_walking_1
+        if current_index == 6:
+            current_bg = bg_collapse
+        if current_index == 8:
+            current_bg = bg_flying
+        if current_index == len(current_dialog) - 1:
+            if not collapse:
+                collapse = True
+            game_state = "game_over"
+
+    if current_dialog == mirage_dialog:
+        if current_index == 0:
+            current_bg = bg_walking_2
+        if current_index == 1:
+            current_bg = bg_walking_3
+        if current_index == 2:
+            current_bg = bg_collapse
+        if current_index == len(current_dialog) - 1:
+            if not collapse:
+                collapse = True
+            current_dialog = ["You collapsed in the desert heat... Game Over."]
+            current_index = 0
+            game_state = "game_over"
+
+    if current_dialog == jeep_dialog:
+        if current_index == 0:
+            current_bg = bg_walking_3
+        if current_index == 1:
+            current_bg = bg_jeep_man_inspecting
+        if current_index == len(current_dialog) - 1:
+            game_state = "jeep_choices" 
+        
+    if current_dialog == jeep_back_dialog:
+        if current_index == 1:
+            current_bg = bg2
+        if current_index == len(current_dialog) - 1:
+            current_dialog = jeep_vs_pond_main
+            current_index = 1  
+            dialog_box_visible = True
+
+    if current_dialog == jeep_man_talk:
+        if current_index == 1:
+            current_bg = bg_jeep
+            jeep_man_visible = True
+        if current_index == 2:
+            dialog_character = dialog_man
+        if current_index == 5:
+            dialog_character = dialog_ch
+        if current_index == len(current_dialog) - 1:
+            if bucket_icon in inventory_items:
+                game_state = "jeep_bucket_choices"
+            else:
+                game_state = "jeep_no_bucket_choices"
+
+    elif current_dialog == bucket_given_dialog:
+        if current_index == len(current_dialog) - 1:
+            game_state = "trivia_game_2"
+            dialog_box_visible = True
+        if current_index == 0:
+            if bucket_icon in inventory_items:
+                inventory_items.remove(bucket_icon)
+        if current_index == 1:
+            jeep_man_visible = False
+            current_bg = bg_jeep
+        if current_index == 3:
+            cactus_visible = True
+        if current_index == 4:
+            dialog_character = dialog_cactus
+
+    elif current_dialog == bucket_thrown_dialog:
+        if current_index == len(current_dialog) - 1:
+            game_state = "trivia_game_2"
+            dialog_box_visible = True
+        if current_index == 0:
+            if bucket_icon in inventory_items:
+                inventory_items.remove(bucket_icon)
+        if current_index == 1:
+            jeep_man = jeep_man_angry
+            dialog_character = dialog_man
+        if current_index == 2:
+            dialog_character = dialog_ch
+        if current_index == 3:
+            dialog_character = dialog_man
+        if current_index == 4:
+            dialog_character = dialog_ch
+        if current_index == 5:
+            dialog_character = dialog_man
+        if current_index == 6:
+            dialog_character = dialog_ch
+        if current_index == 7:
+            dialog_character = dialog_man
+            jeep_man = jeep_man_normal
+        if current_index == 8:
+            dialog_character = dialog_ch
+            jeep_man_visible = False
+        if current_index == 10:
+            cactus_visible = True
+        if current_index == 11:
+            dialog_character = dialog_cactus
+
+
+        
+
+    elif current_dialog == man_back_dialog:
+        if current_index == 0:
+            jeep_man = jeep_man_bucket
+            jeep_man_visible = True
+        if current_index == 1:
+            jeep_man_visible = False
+            current_bg = bg_jeep_man_inspecting
+        if current_index == 3 and not man_back_bonus:
+            man_back_bonus = True
+            total_score += 10
+            man_back_dialog[4] = f"Your total score now is {total_score}."
+            check_score()
+        if current_index == 5:
+            jeep_man = jeep_man_normal
+            jeep_man_visible = True
+            dialog_character = dialog_man
+            current_bg = bg_jeep
+        if current_index == 6:
+            dialog_character = dialog_ch
+            jeep_man_visible = False
+            current_bg = bg_in_jeep
+        if current_index == 7:
+            current_bg = bg_flying
+        if current_index == 11:
+            current_bg = bg_village_entrance
+        if current_index == 12:
+            dialog_character = dialog_man
+        if current_index == len(current_dialog) - 1:
+            #game_state
+            dialog_box_visible = True
+            man_back = False
+        
+
+    elif current_dialog == ["You refuse.", "Fine! FINE. I won't help you next time!", "It vanishes looking deeply offended."]:
+        if current_index == 1:
+            dialog_character = dialog_cactus
+        if current_index == 2:
+            dialog_character = dialog_ch
+            cactus_visible = False
+        if current_index == len(current_dialog) - 1:
+            cactus = cactus_normal
+        
+    elif current_dialog == stare_man_dialog:
+        if current_index == 3:
+            dialog_character = dialog_man
+        if current_index == 4:
+            dialog_character = dialog_ch
+        if current_index == 5:
+            dialog_character = dialog_man
+        if current_index == len(current_dialog) - 1:
+            current_dialog = man_die
+            current_index = 0
+
+    elif current_dialog == help_dialog:
+        if current_index == 1:
+            dialog_character = dialog_man
+        if current_index == 2:
+            dialog_character = dialog_ch    
+        if current_index == 3:
+            dialog_character = dialog_man
+        if current_index == 4:
+            dialog_character = dialog_ch
+        if current_index == 5:
+            dialog_character = dialog_man
+        if current_index == len(current_dialog) - 1:
+            current_dialog = man_die
+            current_index = 0
+        
+    elif current_dialog == man_die:
+        if current_index == 0:
+            jeep_man_visible = False
+            current_bg = bg_jeep_man_inspecting
+        if current_index == 2:
+            current_bg = bg_jeep_night_1
+        if current_index == 3:
+            current_bg = bg_jeep_night_2
+        if current_index == 6:
+            current_bg = bg_jeep_night_3
+        if current_index == 7:
+            current_bg = bg_stars  
+        if current_index == 8:
+            current_bg = bg_stars_blur
+        if current_index == 9:
+            current_bg = bg_flying
+        if current_index == len(current_dialog) - 1:
+            collapse = True
+            game_state = "game_over"
+        
+            
+    #ENDINGS
+    if collapse and "Collapsed on the hot sand" not in endings:
+        endings.append("Collapsed on the hot sand")
+    if points_poor and "Points Poor" not in endings:
+        endings.append("Points Poor")   
+        
+        
+
+
+
+        
+
+            
+    if current_bg == bg2:
+        if not bucket_taken:
             screen.blit(bucket_img, (510,352))
+        
 
     
 
@@ -614,7 +1260,16 @@ while True:
             current_index = 0
             dialog_box_visible = True
 
-            
+    if man_back and not dialog_box_visible:
+        if current_time - man_back_timer > 2000:
+            man_back_dialog[4] = f"Your total score now is {total_score} points!"  
+            current_dialog = man_back_dialog
+            current_index = 0
+            dialog_box_visible = True
+
+
+    if jeep_man_visible: #EDIT
+            screen.blit(jeep_man, (480, 280))        
 
     
     if game_state == "dialog":
@@ -622,7 +1277,31 @@ while True:
     elif game_state == "choice_cactus_1":
         cactus_questions("That was weird", "That was soooo much fun!") 
     elif game_state == "game_over":
-        dialog_check()   
+        dialog_check() 
+
+    elif game_state == "bucket_choice":
+        choices("Take the bucket", "Leave the bucket")
+
+    elif game_state == "jeep_vs_pond_choice":
+        choices("Walk to the pond", "Walk to the jeep")
+
+    elif game_state == "pond_choices":
+        choices("Keep walking", "Go back")
+
+    elif game_state == "cactus_rare_choices":
+        choices("Accept the offer", "Refuse")
+
+    elif game_state == "jeep_choices":
+        choices("Talk to the man", "Go back")
+#HERE
+    elif game_state == "jeep_bucket_choices":
+        choices("Give him the bucket", "Throw the bucket at his head.")
+
+    elif game_state == "jeep_no_bucket_choices":
+        choices("Try to help in another way", "Stare at him.")
+
+    elif game_state == "trivia_game_2":
+        choices("Let's play", "No. GO. AWAY.")
 
     if trivia_active:
         draw_trivia()
@@ -638,8 +1317,10 @@ while True:
             current_index = 0
             round_score = 0
 
-        
+    if inventory_visible:
+        draw_inventory()    
             
+    
 
 
 
