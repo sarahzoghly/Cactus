@@ -33,7 +33,7 @@ drink = ["warm water",
          "cold water",
          "a..smoothie? How did it come here?",
          "orange juice",
-         "coctail",
+         "cocktail",
          "coconut water",
          "tea? that may do",
          "green juice.. you are thiristy, you can't complain"]
@@ -45,8 +45,7 @@ pet = ["a cat",
        "a..goat?",
        "a bird",
        "a monkey",
-       "a cactus, it may be your imagination"
-       "or dehydration but"]
+       "a cactus, it may be your imagination or dehydration but.."]
 
 pet_condition =["it looks hungry",
                 "it looks like it has a broken bone",
@@ -85,7 +84,7 @@ trivia_questions = [
     {"question":"What planet is known for its rings?",
      "answer":"saturn", "wrong":["uranus", "neptune", "pluto"]},
     {"question":"What is H2O more commonly known as?",
-     "answer":"water", "wrong":["air", "oxygen", "hydrocloric acid"]},
+     "answer":"water", "wrong":["air", "oxygen", "hydrochloric acid"]},
     {"question":"What do we call molten rock upon the surface after it erupts from a volcano?",
      "answer":"lava", "wrong":["magma", "igneous rock", "nagma"]},
     {"question":"What part of the body pumps blood?",
@@ -130,13 +129,18 @@ trivia_questions = [
      "answer":"lizard", "wrong":["snakes", "salamanders", "ostriches"]},
 ]
 #VARIABLES 
-
+pet_visible = False
+the_pet = random.choice(pet)
+pet_name_input = ""
+the_pet_condition = random.choice(pet_condition)
 total_score = 0
 round_score = 0
 lose_count = 0 
 inventory_items = []
 inventory_visible = True
 pet_name = ""
+naming_active = False
+pet_taken = False
 endings = []
 dialog_box_visible = False
 game_state = "dialog"
@@ -199,6 +203,7 @@ man_back_bonus = False
 post_trivia_1_done = False 
 
 strange_sound = random.choice(sound)
+player_pet_status = random.choice(pet_condition_2)
 
 #DIALOG
 intro = ["You find yourself in the middle of the desert.",
@@ -373,6 +378,33 @@ man_die = ["You both try everything to fix" #BACK
             "Everything fades.",
             "You don’t hear anything anymore.",
             "You had to get the bucket."]
+
+pet_dialog = ["You get off the jeep.",
+              "You have no idea what to do.",
+              "You walk aimlessly.",
+              "You don't see anyone but you can spot some houses in a distance.",
+              "you walk",
+              "...",
+              "...",
+              "As you walk through the dusty streets, you hear footsteps behind you",
+              "You stop.",
+              f"You turn around—it’s {the_pet}",
+              f"{the_pet_condition}.",
+              "nothing"]
+pet_accepted_dialog = ["You adopted it!",
+                       "What will you name it?",
+                       "nothing"]
+
+pet_rejected_dialog = ["You leave it behind.",
+                        "It looked… kind of sad."
+                        "You turn around",
+                        "You can feel it watching you walk away.",
+                        "nothing"]
+
+pet_name_done = [f"Your pet name is {pet_name}",
+                 f"{player_pet_status}",
+                 "nothing"]
+
 current_dialog = intro
 current_index = 0
 #ENDINGS
@@ -415,7 +447,14 @@ bg_jeep_night_3 = pygame.image.load("Images/bg_jeep_night_full.jpg").convert_alp
 bg_stars = pygame.image.load("Images/bg_stars.jpg").convert_alpha()
 bg_stars_blur = pygame.image.load("Images/bg_stars_blur.jpg").convert_alpha()
 bg_village_entrance = pygame.image.load("Images/bg_village_entrance.jpg").convert_alpha()
-
+pet_cat = pygame.image.load("Images/pet_cat.png").convert_alpha()
+pet_parrot = pygame.image.load("Images/pet_parrot.png").convert_alpha()
+pet_rabbit = pygame.image.load("Images/pet_rabbit.png").convert_alpha()
+pet_turtle = pygame.image.load("Images/pet_turtle.png").convert_alpha()
+pet_goat = pygame.image.load("Images/pet_goat.png").convert_alpha()
+pet_bird = pygame.image.load("Images/pet_bird.png").convert_alpha()
+pet_monkey = pygame.image.load("Images/pet_monkey.png").convert_alpha()
+pet_cactus = pygame.image.load("Images/pet_cactus.png").convert_alpha()
 #SLOTS
 slot1 = pygame.image.load("Images/slot1.png").convert_alpha()
 slot2 = pygame.image.load("Images/slot2.png").convert_alpha()
@@ -431,6 +470,7 @@ slot5_rect = slot5.get_rect(topleft=(780, 10))
 
 current_bg = bg1
 jeep_man = jeep_man_normal
+the_pet_img = pet_cat
 
 #FONT
 font = pygame.font.Font("fonts/messages.ttf", 30)
@@ -558,6 +598,7 @@ def restart():
     trivia_dialog = []
     jeep_man = jeep_man_normal
     jeep_vs_pond_main = []  
+    
 
 def draw_message(message, x, y):
     text_surface = font.render(message, True, (0, 0, 0))
@@ -654,6 +695,11 @@ def draw_trivia():
         else:
             screen.blit(choice_character, (60, 565))
 
+def draw_naming():
+    global pet_name_input
+    pygame.draw.rect(screen, (255, 255, 255), (340, 560, 600, 50))
+    draw_message(pet_name_input, 340, 568)
+
 while True:
 
     for event in pygame.event.get():
@@ -662,7 +708,8 @@ while True:
             pygame.quit()
             sys.exit()
         
-
+        
+        
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_F11: 
                 pygame.display.toggle_fullscreen()
@@ -684,12 +731,14 @@ while True:
 
                 elif dialog_box_visible and game_state == "choice_cactus_1":
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         game_state = "dialog"
                         current_dialog = cactus_sad
                         cactus = cactus_angry
                         current_index = 0
                         dialog_box_visible = True
                     elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         game_state = "dialog"
                         trivia_active = True
                         trivia_question_num = 0
@@ -743,12 +792,14 @@ while True:
 
                 elif game_state == "bucket_choice":
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         game_state = "dialog"
                         jeep_vs_pond_main = ["You left the bucket"] + jeep_vs_pond
                         current_dialog = jeep_vs_pond_main
                         current_index = 0
                         dialog_box_visible = True
                     elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         game_state = "dialog"
                         inventory_add(bucket_icon)
                         bucket_taken = True
@@ -760,12 +811,14 @@ while True:
 
                 elif game_state == "jeep_vs_pond_choice":
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         game_state = "dialog"
                         current_dialog = jeep_dialog
                         current_bg = bg_jeep
                         current_index = 0
                         dialog_box_visible = True
                     elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         game_state = "dialog"
                         current_dialog = pond_dialog
                         current_bg = bg_pond
@@ -774,6 +827,7 @@ while True:
   
                 elif game_state == "pond_choices":
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         total_score -= 5
                         check_score()
                         if total_score >= 0:
@@ -782,7 +836,8 @@ while True:
                             current_index = 0
                             dialog_box_visible = True
                     elif selected_choice == "left_choice":
-                        rare_event_mirage = 0 #random.randint(1, 15) EDIT LATER 
+                        selected_choice = "nothing"
+                        rare_event_mirage = random.randint(1, 15) 
                         if rare_event_mirage == 1:
                             current_dialog = cactus_rare_dialog
                             game_state = "dialog"
@@ -800,11 +855,13 @@ while True:
 
                 elif game_state == "cactus_rare_choices":
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         current_dialog = cactus_rare_sad
                         game_state = "dialog"
                         current_index = 0
                         dialog_box_visible = True
                     elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         current_dialog = cactus_rare_happy
                         game_state = "dialog"
                         current_index = 0
@@ -812,6 +869,7 @@ while True:
 
                 elif game_state == "jeep_choices": 
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         total_score -= 5
                         check_score()
                         if total_score >= 0:
@@ -821,6 +879,7 @@ while True:
                             current_index = 0
                             dialog_box_visible = True
                     elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         current_dialog = jeep_man_talk
                         game_state = "dialog"
                         current_index = 0
@@ -828,12 +887,14 @@ while True:
 #HERE
                 elif game_state == "jeep_bucket_choices":
                     if selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         current_dialog = bucket_given_dialog
                         inventory_items.remove(bucket_icon)
                         game_state = "dialog"
                         current_index = 0
                         dialog_box_visible = True
                     elif selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         total_score -= 5
                         check_score()
                         if total_score >= 0:
@@ -845,6 +906,7 @@ while True:
 
                 elif dialog_box_visible and game_state == "trivia_game_2":
                     if selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         trivia_round = 2
                         trivia_active = True
                         trivia_question_num = 0
@@ -853,6 +915,7 @@ while True:
                         game_state = "dialog"
                         dialog_box_visible = False
                     elif selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         cactus = cactus_angry
                         current_dialog = ["You refuse.",
                                           "Fine! FINE. I won't help you next time!",
@@ -866,15 +929,47 @@ while True:
 
                 elif game_state == "jeep_no_bucket_choices":
                     if selected_choice == "right_choice":
+                        selected_choice = "nothing"
                         current_dialog = stare_man_dialog
                         game_state = "dialog"
                         current_index = 0
                         dialog_box_visible = True
                     elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
                         current_dialog = help_dialog
                         game_state = "dialog"
                         current_index = 0
                         dialog_box_visible = True
+                
+                elif game_state == "pet_choices":
+                    if selected_choice == "right_choice":
+                        selected_choice = "nothing"
+                        current_dialog = pet_rejected_dialog
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
+                        current_dialog = pet_accepted_dialog
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                
+                
+            if game_state == "pet_naming":
+                if event.key == pygame.K_BACKSPACE:
+                    pet_name_input = pet_name_input[:-1]
+                if event.key == pygame.K_RETURN and pet_name_input != "":
+                    pet_name = pet_name_input
+                    pet_name_input = ""
+                    pygame.key.stop_text_input()
+                    game_state = "dialog"
+                    dialog_box_visible = True
+                    naming_active = False
+                    pet_name_done[0] = f"Your pet name is {pet_name}"
+                    current_index = 0
+                    current_dialog = pet_name_done
+                    
 
             if event.key == pygame.K_RIGHT:
                 if choice_character_visible:
@@ -900,9 +995,14 @@ while True:
                         elif trivia_selected == "D":
                             trivia_selected = "C"
 
-
+        elif event.type == pygame.TEXTINPUT:
+            if game_state == "pet_naming":
+                if font.size(pet_name_input + event.text)[0] < 580:
+                    pet_name_input += event.text
+        
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
+            print(mouse_pos)
     
     start()
     current_time = pygame.time.get_ticks()
@@ -1173,10 +1273,32 @@ while True:
         if current_index == 12:
             dialog_character = dialog_man
         if current_index == len(current_dialog) - 1:
-            #game_state
+            dialog_character = dialog_ch
+            current_dialog = pet_dialog
+            current_index = 0
             dialog_box_visible = True
             man_back = False
-        
+    
+    elif current_dialog == pet_dialog:
+        if current_index == 0:
+            current_bg = bg2
+        if current_index == 2:
+            current_bg = bg_walking_1
+        if current_index == 3:
+            current_bg = bg_walking_2
+        if current_index == 4:
+            current_bg = bg_walking_3
+        if current_index == 5:
+            current_bg = bg2
+        if current_index == 6:
+            current_bg = bg_walking_3
+        if current_index == 7:
+            current_bg = bg2
+        if current_index == 9:
+            pet_visible = True
+        if current_index == len(current_dialog) - 1:
+            game_state = "pet_choices"
+            dialog_box_visible = True
 
     elif current_dialog == ["You refuse.", "Fine! FINE. I won't help you next time!", "It vanishes looking deeply offended."]:
         if current_index == 1:
@@ -1230,8 +1352,24 @@ while True:
         if current_index == 9:
             current_bg = bg_flying
         if current_index == len(current_dialog) - 1:
-            collapse = True
             game_state = "game_over"
+    
+    if current_dialog == pet_rejected_dialog:
+        if current_index == 2:
+            pet_visible = False
+        if current_index == 3:
+            current_bg = bg_walking_2
+        if current_index == len(current_dialog) - 1:
+            #VILLAGE
+            current_index = 0
+
+    if current_dialog == pet_accepted_dialog:
+        if current_index == len(current_dialog) - 1 and not naming_active:
+            pet_taken = True
+            game_state = "pet_naming"
+            pygame.key.start_text_input()
+            pet_name_input = ""
+            naming_active = True
         
             
     #ENDINGS
@@ -1267,9 +1405,28 @@ while True:
             current_index = 0
             dialog_box_visible = True
 
+    if the_pet == "a cat":
+        the_pet_img = pet_cat
+    elif the_pet == "a parrot":
+        the_pet_img = pet_parrot
+    elif the_pet == "a turtle":
+        the_pet_img = pet_turtle
+    elif the_pet == "a..goat?":
+        the_pet_img = pet_goat
+    elif the_pet == "a rabbit":
+        the_pet_img = pet_rabbit
+    elif the_pet == "a bird":
+        the_pet_img = pet_bird
+    elif the_pet == "a monkey":
+        the_pet_img = pet_monkey
+    elif the_pet == "a cactus, it may be your imagination or dehydration but..":
+        the_pet_img = pet_cactus
 
     if jeep_man_visible: #EDIT
             screen.blit(jeep_man, (480, 280))        
+
+    if pet_visible:
+        screen.blit(the_pet_img, (480, 280))  
 
     
     if game_state == "dialog":
@@ -1302,9 +1459,15 @@ while True:
 
     elif game_state == "trivia_game_2":
         choices("Let's play", "No. GO. AWAY.")
+    
+    elif game_state == "pet_choices":
+        choices("Keep it", "Don't")
 
     if trivia_active:
         draw_trivia()
+
+    if game_state == "pet_naming":
+        draw_naming()
 
     if showing_trivia_result:
         if current_time - result_timer > 1000:
