@@ -135,7 +135,7 @@ the_food = random.choice(food)
 the_drink = random.choice(drink)
 pet_name_input = ""
 the_pet_condition = random.choice(pet_condition)
-total_score = 35
+total_score = 0
 round_score = 0
 lose_count = 0 
 inventory_items = []
@@ -697,6 +697,7 @@ cactus_evil = pygame.image.load("Images/cactus_evil.png").convert_alpha()
 cactus_dissappointed = pygame.image.load("Images/cactus_dissappointed.png").convert_alpha()
 cactus_points_won = pygame.image.load("Images/cactus_points_won.png").convert_alpha()
 cactus_points_loss = pygame.image.load("Images/cactus_points_loss.png").convert_alpha()
+cactus_angry = pygame.image.load("Images/cactus_angry.png").convert_alpha()
 cactus = cactus_normal
 dialog_character = dialog_ch
 bg2 = pygame.image.load("Images/bg2.jpg").convert_alpha()
@@ -1417,7 +1418,7 @@ while True:
                         current_index = 0
                         dialog_box_visible = True
 
-                elif game_state == "evil_cactus_choices_no_pet":
+            elif game_state == "evil_cactus_choices_no_pet":
                     if selected_choice == "right_choice":
                         selected_choice = "nothing"
                         current_dialog = bad_ending_no_pet_no
