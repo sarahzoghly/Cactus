@@ -588,14 +588,16 @@ bad_ending = ["A little more energy returns to you after eating.",
               "Just as you're about to decide where to go next…",
               "Hey there! Still lost? :D",
               "You look up.",
-              "It is there again. You walk away..",
+              "It is there again.",
+              "You walk away..",
               "You walk away.",
               "You-",
               "I am not done talking yet. That is rude.",
               "You listen to the floating cactus.",
               "nothing"]
 
-bad_ending_pet = ["Soooo here’s the thing—you’ve got, like, no money, no family around, no idea where you are… OH!",
+bad_ending_pet = ["Soooo here’s the thing—you’ve got, like, no money, no family around, no idea where you are…",
+                  "OH!",
                   f"But you do have {pet_name}! Cute little thing!",
                   "You tense up.",
                   "You try to walk away but your feet are rooted to the ground.",
@@ -619,7 +621,7 @@ bad_ending_pet_no = ["Oh, never mind! You don’t get to choose this time. It is
                      "You eat.",
                      "You are alive."]
 
-bad_ending_pet_yes = ["You don't get to choose this time anyway but thanks for teh effort.",
+bad_ending_pet_yes = ["You don't get to choose this time anyway but thanks for the effort.",
                      "...",
                      "...",
                      "You are inside a small shop.",
@@ -640,7 +642,7 @@ bad_ending_no_pet = ["Soooo here’s the thing—you’ve got, like, no money, n
                      "Pretty sweet, right?",
                      "Buuuuuut—",
                      "(Dramatic pause)",
-                     "—I get to keep all your coins",
+                     "—I get to keep all your points",
                      f"{total_score} points, right?",
                      "That is a decent amount. Not bad. Not good either but better than nothing.",
                      "nothing"]
@@ -656,16 +658,16 @@ bad_ending_no_pet_no = ["Oh, never mind! You don’t get to choose this time. It
                         "You eat.",
                         "You are alive."]
 
-bad_ending_no_pet_no = ["You don't get to choose this time anyway but thanks for teh effort.",
-                        "...",
-                        "...",
-                        "You are inside a small shop.",
-                        "Alone.",
-                        "You have no points.",
-                        "After a week..",
-                        "You work every day.",
-                        "You eat.",
-                        "You are alive."]
+bad_ending_no_pet_yes = ["You don't get to choose this time anyway but thanks for the effort.",
+                         "...",
+                         "...",
+                         "You are inside a small shop.",
+                         "Alone.",
+                         "You have no points.",
+                         "After a week..",
+                         "You work every day.",
+                         "You eat.",
+                         "You are alive."]
 
 
 
@@ -690,7 +692,9 @@ dialog_man = pygame.image.load("Images/dialog_man_symbol.png").convert_alpha()
 dialog_bro = pygame.image.load("Images/dialog_bro.png").convert_alpha()
 dialog_woman = pygame.image.load("Images/dialog_woman_symbol.png").convert_alpha()
 cactus_normal = pygame.image.load("Images/cactus_character.png").convert_alpha()
-cactus_angry = pygame.image.load("Images/cactus_angry.png").convert_alpha()
+cactus_shocked = pygame.image.load("Images/cactus_shocked.png").convert_alpha()
+cactus_evil = pygame.image.load("Images/cactus_evil.png").convert_alpha()
+cactus_dissappointed = pygame.image.load("Images/cactus_dissappointed.png").convert_alpha()
 cactus_points_won = pygame.image.load("Images/cactus_points_won.png").convert_alpha()
 cactus_points_loss = pygame.image.load("Images/cactus_points_loss.png").convert_alpha()
 cactus = cactus_normal
@@ -717,6 +721,8 @@ bg_sunset_sitting = pygame.image.load("Images/bg_sunset_sitting.jpg").convert_al
 bg_week = pygame.image.load("Images/bg_week.jpg").convert_alpha()
 bg_mid_pet = pygame.image.load("Images/bg_mid_pet.jpg").convert_alpha()
 bg_mid_no_pet = pygame.image.load("Images/bg_mid_no_pet.jpg").convert_alpha()
+bg_white = pygame.image.load("Images/bg_white.jpg").convert_alpha()
+bg_bad_ending = pygame.image.load("Images/bg_bad_ending.jpg").convert_alpha()
 jeep_man_normal = pygame.image.load("Images/jeep_man_normal.png").convert_alpha()
 bro_normal = pygame.image.load("Images/bro_normal.png").convert_alpha()
 bro_sad = pygame.image.load("Images/bro_sad.png").convert_alpha()
@@ -1396,6 +1402,34 @@ while True:
                     pet_name_done[0] = f"Your pet name is {pet_name}"
                     current_index = 0
                     current_dialog = pet_name_done
+
+            elif game_state == "evil_cactus_choices":
+                    if selected_choice == "right_choice":
+                        selected_choice = "nothing"
+                        current_dialog = bad_ending_pet_no
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
+                        current_dialog = bad_ending_pet_yes
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+
+                elif game_state == "evil_cactus_choices_no_pet":
+                    if selected_choice == "right_choice":
+                        selected_choice = "nothing"
+                        current_dialog = bad_ending_no_pet_no
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
+                    elif selected_choice == "left_choice":
+                        selected_choice = "nothing"
+                        current_dialog = bad_ending_no_pet_yes
+                        game_state = "dialog"
+                        current_index = 0
+                        dialog_box_visible = True
                     
 
             if event.key == pygame.K_RIGHT:
@@ -2073,12 +2107,16 @@ while True:
                 current_dialog = best_ending
             elif 75 > total_score >= 35:
                 current_dialog = mid_ending 
+            elif 35 > total_score:
+                current_dialog = bad_ending
 
     if current_dialog == "weird":
         if total_score >= 75: #ENDING
                 current_dialog = best_ending
         elif 75 > total_score >= 35:
                 current_dialog = mid_ending 
+        elif 35 > total_score:
+                current_dialog = bad_ending
 
     if current_dialog == best_ending:
         if current_index == 0:
@@ -2191,6 +2229,140 @@ while True:
         current_bg = bg_mid_no_pet
         if current_index == len(current_dialog) - 1:
             game_state = "game_over"
+
+    if current_dialog == bad_ending:
+        if current_index == 1:
+            current_bg = bg_sunset
+        if current_index == 3:
+            dialog_character = dialog_cactus
+        if current_index == 4:
+            dialog_character = dialog_ch
+            cactus_visible = True
+        if current_index == 9:
+            dialog_character = dialog_cactus
+            cactus = cactus_angry
+        if current_index == 10:
+            dialog_character = dialog_ch
+        if current_index == len(current_dialog) - 1:
+            current_index = 0
+            dialog_box_visible = True
+            if pet_taken:
+                current_dialog = bad_ending_pet
+            else:
+                current_dialog = bad_ending_no_pet
+        
+    if current_dialog == bad_ending_pet:
+        bad_ending_pet[2] = f"But you do have {pet_name}! Cute little thing!"
+        bad_ending_pet[11] = f"—I get to keep {pet_name}."
+        if current_index == 0:
+            cactus = cactus_normal
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            cactus = cactus_shocked
+        if current_index == 2:
+            cactus = cactus_normal
+        if current_index == 3:
+            dialog_character = dialog_ch
+        if current_index == 6:
+            dialog_character = dialog_cactus
+        if current_index == 11:
+            cactus = cactus_evil
+        if current_index == len(current_dialog) - 1:
+            game_state = "evil_cactus_choices"
+            cactus = cactus_normal
+    
+    if current_dialog == bad_ending_pet_no:
+        bad_ending_pet_no[4] = f"Alone. No {pet_name} in sight."
+        if current_index == 0:
+            cactus = cactus_evil
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            cactus_visible = False
+            current_bg = bg_white
+            dialog_character = dialog_ch
+        if current_index == 3:
+            current_bg = bg_bad_ending
+        if current_index == 5:
+            current_bg = bg_week
+        if current_index == 6:
+            current_bg = bg_bad_ending
+        if current_index == len(current_dialog) - 1:
+            game_state = "game_over"
+
+    if current_dialog == bad_ending_pet_yes:
+        bad_ending_pet_no[4] = f"Alone. No {pet_name} in sight."
+        if current_index == 0:
+            cactus = cactus_evil
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            cactus_visible = False
+            current_bg = bg_white
+            dialog_character = dialog_ch
+        if current_index == 3:
+            current_bg = bg_bad_ending
+        if current_index == 5:
+            current_bg = bg_week
+        if current_index == 6:
+            current_bg = bg_bad_ending
+        if current_index == len(current_dialog) - 1:
+            game_state = "game_over"
+            
+    if current_dialog == bad_ending_no_pet:
+        bad_ending_no_pet[12] = f"{total_score} points, right?"
+        if current_index == 0:
+            cactus = cactus_normal
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            cactus = cactus_dissappointed
+            dialog_character = dialog_ch
+        if current_index == 2:
+            dialog_character = dialog_cactus
+        if current_index == 3:
+            dialog_character = dialog_ch
+        if current_index == 6:
+            dialog_character = dialog_cactus
+        if current_index == 11:
+            cactus = cactus_evil
+        if current_index == len(current_dialog) - 1:
+            game_state = "evil_cactus_choices_no_pet"
+            cactus = cactus_normal
+        
+    if current_dialog == bad_ending_pet_no:
+        if current_index == 0:
+            cactus = cactus_evil
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            cactus_visible = False
+            current_bg = bg_white
+            dialog_character = dialog_ch
+        if current_index == 3:
+            current_bg = bg_bad_ending
+        if current_index == 6:
+            current_bg = bg_week
+        if current_index == 7:
+            current_bg = bg_bad_ending
+        if current_index == len(current_dialog) - 1:
+            game_state = "game_over"
+
+    if current_dialog == bad_ending_pet_yes:
+        if current_index == 0:
+            cactus = cactus_evil
+            dialog_character = dialog_cactus
+        if current_index == 1:
+            cactus_visible = False
+            current_bg = bg_white
+            dialog_character = dialog_ch
+        if current_index == 3:
+            current_bg = bg_bad_ending
+        if current_index == 6:
+            current_bg = bg_week
+        if current_index == 7:
+            current_bg = bg_bad_ending
+        if current_index == len(current_dialog) - 1:
+            game_state = "game_over"
+    
+
+        
 
     #B
             
@@ -2355,6 +2527,12 @@ while True:
     elif game_state == "cactus_eating_choices":
         current_bg = bg_sunset_sitting
         choices("Fine.", "Throw the empty cup at it.")
+
+    elif game_state == "evil_cactus_choices":
+        choices("Agree", "Refuse")
+
+    elif game_state == "evil_cactus_choices_no_pet":
+        choices("Agree", "Refuse")
 
     if trivia_active:
         draw_trivia()
