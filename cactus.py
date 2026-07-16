@@ -596,7 +596,76 @@ bad_ending = ["A little more energy returns to you after eating.",
               "nothing"]
 
 bad_ending_pet = ["Soooo here’s the thing—you’ve got, like, no money, no family around, no idea where you are… OH!",
-                  f"But you do have {pet_name}! Cute little thing!"]
+                  f"But you do have {pet_name}! Cute little thing!",
+                  "You tense up.",
+                  "You try to walk away but your feet are rooted to the ground.",
+                  "You listen to the catus.",
+                  "Here’s the deal, I know a nearby shop that needs a worker.",
+                  "You get a room and one meal a day!",
+                  "Pretty sweet, right?",
+                  "Buuuuuut—",
+                  "(Dramatic pause)",
+                  f"—I get to keep {pet_name}.",
+                  "I’m already attached. You understand.",
+                  "nothing"]
+
+bad_ending_pet_no = ["Oh, never mind! You don’t get to choose this time. It is my turn now",
+                     "...",
+                     "...",
+                     "You are inside a small shop.",
+                     f"Alone. No {pet_name} in sight.",
+                     "After a week..",
+                     "You work every day.",
+                     "You eat.",
+                     "You are alive."]
+
+bad_ending_pet_yes = ["You don't get to choose this time anyway but thanks for teh effort.",
+                     "...",
+                     "...",
+                     "You are inside a small shop.",
+                     f"Alone. No {pet_name} in sight.",
+                     "After a week..",
+                     "You work every day.",
+                     "You eat.",
+                     "You are alive."]
+
+bad_ending_no_pet = ["Soooo here’s the thing—you’ve got, like, no money, no family around, no idea where you are… OH!",
+                     "It sighs dramatically",
+                     "You really don't have anything worth taking, but I can think of a deal..."
+                     "You tense up.",
+                     "You try to walk away but your feet are rooted to the ground.",
+                     "You listen to the catus.",
+                     "Here’s the deal, I know a nearby shop that needs a worker.",
+                     "You get a room and one meal a day!",
+                     "Pretty sweet, right?",
+                     "Buuuuuut—",
+                     "(Dramatic pause)",
+                     "—I get to keep all your coins",
+                     f"{total_score} points, right?",
+                     "That is a decent amount. Not bad. Not good either but better than nothing.",
+                     "nothing"]
+
+bad_ending_no_pet_no = ["Oh, never mind! You don’t get to choose this time. It is my turn now",
+                        "...",
+                        "...",
+                        "You are inside a small shop.",
+                        "Alone.",
+                        "You have no points.",
+                        "After a week..",
+                        "You work every day.",
+                        "You eat.",
+                        "You are alive."]
+
+bad_ending_no_pet_no = ["You don't get to choose this time anyway but thanks for teh effort.",
+                        "...",
+                        "...",
+                        "You are inside a small shop.",
+                        "Alone.",
+                        "You have no points.",
+                        "After a week..",
+                        "You work every day.",
+                        "You eat.",
+                        "You are alive."]
 
 
 
