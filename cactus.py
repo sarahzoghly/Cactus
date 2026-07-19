@@ -29,7 +29,6 @@ drink = ["warm water",
          "cold water",
          "a..smoothie? How did it come here?",
          "orange juice",
-         "cocktail",
          "coconut water",
          "tea? that may do",
          "green juice.. you are thiristy, you can't complain"]
@@ -774,7 +773,6 @@ cold_water = pygame.image.load("Images/cold_water.png").convert_alpha()
 water = pygame.image.load("Images/water.png").convert_alpha()
 smoothie = pygame.image.load("Images/smoothie.png").convert_alpha()
 orange_juice = pygame.image.load("Images/orange_juice.png").convert_alpha()
-cocktail = pygame.image.load("Images/cocktail.png").convert_alpha()
 coconut_water = pygame.image.load("Images/coconut_water.png").convert_alpha()
 tea = pygame.image.load("Images/tea.png").convert_alpha()
 green_juice = pygame.image.load("Images/green_juice.png").convert_alpha()
@@ -784,7 +782,6 @@ cold_water_icon = pygame.transform.scale(cold_water, (60, 60))
 water_icon = pygame.transform.scale(water, (60, 60))
 smoothie_icon = pygame.transform.scale(smoothie, (60, 60))
 orange_juice_icon = pygame.transform.scale(orange_juice, (60, 60))
-cocktail_icon = pygame.transform.scale(cocktail, (60, 60))
 coconut_water_icon = pygame.transform.scale(coconut_water, (60, 60))
 tea_icon = pygame.transform.scale(tea, (60, 60))
 green_juice_icon = pygame.transform.scale(green_juice, (60, 60))
@@ -2461,8 +2458,6 @@ while True:
         the_drink_img = smoothie_icon
     elif the_drink == "orange juice":
         the_drink_img = orange_juice_icon
-    elif the_drink == "cocktail":
-        the_drink_img = cocktail_icon
     elif the_drink == "coconut water":
         the_drink_img = coconut_water_icon   
     elif the_drink == "tea? that may do":
